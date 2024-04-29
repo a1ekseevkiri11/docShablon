@@ -1,3 +1,12 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import(
+    Student,
+    SupervisorPractice,
+    SupervisorOPOP
+)
+
+
+admin.site.register(Student)
+admin.site.register(SupervisorOPOP)
+admin.site.register(SupervisorPractice)
