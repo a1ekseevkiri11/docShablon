@@ -1,12 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import (
-    Student,
+from supervisorOPOP.models import (
     SupervisorOPOP,
+)
+from supervisorPractice.models import (
     SupervisorPractice,
 )
 from student.models import (
+    Student,
     Group,
 )
 

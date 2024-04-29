@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'registration.apps.RegistrationConfig',
     'student.apps.StudentConfig',
     'user.apps.UserConfig',
+    'supervisorOPOP.apps.SupervisoropopConfig',
+    'supervisorPractice.apps.SupervisorpracticeConfig',
 ]
 
 MIDDLEWARE = [
