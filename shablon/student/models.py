@@ -73,6 +73,7 @@ class PracticeStudent(models.Model):
     )
 
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
+    practice =  models.ForeignKey(Practice, on_delete=models.CASCADE, default=None)
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
     hard_quality =  models.TimeField()

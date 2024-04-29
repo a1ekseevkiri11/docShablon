@@ -23,6 +23,10 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         if permission.isStudent(self.request.user):
             return reverse_lazy('report')
+        
+        if permission.isSupervisorOPOP(self.request.user):
+            return reverse_lazy('direction_of_training_list')
+        
         #TODO:  дописать для всех групп
         return reverse_lazy('yes')
 

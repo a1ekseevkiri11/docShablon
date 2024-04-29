@@ -6,7 +6,6 @@ from supervisorPractice.models import (
 )
 from student.models import (
     Student,
-    Group,
 )
 
 def isStudent(user):
