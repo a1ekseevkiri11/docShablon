@@ -13,12 +13,17 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin
 )
 
+from . import permission
+
 
 
 class CustomLoginView(LoginView):
     template_name = 'registration/login.html'
 
     def get_success_url(self):
+        if permission.isStudent(self.request.user):
+            return reverse_lazy('report')
+        #TODO:  дописать для всех групп
         return reverse_lazy('yes')
 
 
@@ -95,3 +100,4 @@ class SupervisorPracticeRegistrationView(View):
             form.save()
             return redirect(self.success_url)
         return render(request, self.template_name, {'form': form})
+    
