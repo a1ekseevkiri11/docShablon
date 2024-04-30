@@ -1,0 +1,37 @@
+{% extends "user/base.html" %}
+
+{% block script %}
+
+<!-- Всплывающее окно -->
+<div class="modal fade" id="popup_form" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">название формы</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+            </div>
+            <form method="post" action="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    форма
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Отправить</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+
+    function changeActionUrl(url) {
+        document.getElementById("popup_form").action = url;
+    }
+
+    {% if url_form %}
+        var backendUrl = {{ url_form }};
+        changeActionUrl(backendUrl);
+    {% endif %}
+    
+</script>
+{% endblock %}

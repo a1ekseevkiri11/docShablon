@@ -1,11 +1,7 @@
-from supervisorOPOP.models import (
-    SupervisorOPOP,
-)
-from supervisorPractice.models import (
-    SupervisorPractice,
-)
-from student.models import (
+from user.models import (
     Student,
+    SupervisorOPOP,
+    SupervisorPractice,
 )
 
 def isStudent(user):

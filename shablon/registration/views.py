@@ -25,7 +25,7 @@ class CustomLoginView(LoginView):
             return reverse_lazy('report')
         
         if permission.isSupervisorOPOP(self.request.user):
-            return reverse_lazy('direction_of_training_list')
+            return reverse_lazy('practice-list')
         
         #TODO:  дописать для всех групп
         return reverse_lazy('yes')
