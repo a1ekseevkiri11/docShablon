@@ -30,7 +30,7 @@ class DirectionOfTraining(models.Model):
 
     title = models.CharField(max_length=256, unique=True)
     institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
-    supervisorOPOP = models.ForeignKey(SupervisorOPOP, on_delete=models.CASCADE, default=None)
+    supervisorOPOP = models.ManyToManyField(SupervisorOPOP)
 
     def __str__(self):
         return self.title
@@ -49,7 +49,7 @@ class Group(models.Model):
 
     title = models.CharField(max_length=256)
     number = models.CharField(max_length=10)
-    direction_of_training = models.ForeignKey(DirectionOfTraining, on_delete=models.CASCADE)
+    direction_of_training = models.ManyToManyField(DirectionOfTraining)
     level = models.CharField(max_length=20, choices=level_choices)
     year = models.PositiveIntegerField()
 
@@ -69,6 +69,8 @@ class Amount(models.Model):
 
     def __str__(self):
         return self.title
+    
+
     
 
 class Practice(models.Model):
@@ -95,12 +97,10 @@ class Practice(models.Model):
     number_decree = models.CharField(max_length=20, choices=kind_choices)
     date_decree = models.DateField()
     #адрес
-    title_place = models.CharField(max_length=512, unique=True, default=None)
+    title_place = models.CharField(max_length=512, default=None)
     adress_place = models.CharField(max_length=512, default=None)
-
-    #это надо удалить
-    supervisorOPOP = models.ForeignKey(SupervisorOPOP, on_delete=models.SET_NULL, null=True )
-
+    #TODO поле руководителя от ЮГУ
+    #TODO поле руководителя от предприятия
 
 
     def __str__(self):

@@ -1,0 +1,23 @@
+{% extends "supervisorOPOP/base.html" %}
+
+{% block title %}{{ practice.title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h3>{{ practice.title }}</h3>
+    <p>Группы: {% for group in practice.group.all %}
+        {{ group.title }}{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+    </p>
+    <p>Тип практики: {{ practice.type }}</p>
+    <p>Вид практики: {{ practice.kind }}</p>
+    <p>Дата начала: {{ practice.date_start }}</p>
+    <p>Дата окончания: {{ practice.date_end }}</p>
+    <p>Номер документа: {{ practice.number_decree }}</p>
+    <p>Дата подписания документа: {{ practice.date_decree }}</p>
+    <p>Место проведения практики: {{ practice.title_place }}</p>
+    <p>Адрес места проведения практики: {{ practice.adress_place}}</p>
+    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'practice-update' practice.id %}">Редактировать</a>
+    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'practice-delete' practice.id %}">Удалить</a>
+</div>
+{% endblock content %}

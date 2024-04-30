@@ -10,8 +10,16 @@ from .models import (
 )
 
 admin.site.register(Amount)
-admin.site.register(DirectionOfTraining)
-admin.site.register(Group)
+
+class DirectionOfTrainingAdmin(admin.ModelAdmin):
+    filter_horizontal = ('supervisorOPOP',)
+
+admin.site.register(DirectionOfTraining, DirectionOfTrainingAdmin)
+
+class GroupAdmin(admin.ModelAdmin):
+    filter_horizontal = ('direction_of_training',)
+    
+admin.site.register(Group, GroupAdmin)
 admin.site.register(Institute)
 admin.site.register(Practice)
 admin.site.register(PracticeStudent)

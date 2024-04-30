@@ -4,15 +4,13 @@
 
 {% block content %}
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#popup_form">
-    Создать практику
-</button>
 
 <div class="container-fluid">
     <div class="row">
+        
         <div class="col-md-8 order-md-2">
             <section class="text-center">
-                <form action="" method="get"
+                <form action="{% url 'practice-list' %}" method="get"
                     class="d-flex justify-content-between align-items-center mb-3">
                     <input name="q" type="text" class="form-control me-2" id="searchProject"
                         placeholder="Название практики">
@@ -39,13 +37,56 @@
             </div>
     
         </div>
-
         <div class="col-md-4 order-md-1" id="filtersColumn">
             <div class="row p-2 g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative" style="overflow-y: auto;">
                 <h5 class="text-center mb-3 mt-2">Параметры</h5>
+                <form method="get">
+                    <div class="accordion" id="projectFiltersAccordion">
+                        {% for filter in filters %}
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="filterHeading{{ forloop.counter }}">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#filterCollapse{{ forloop.counter }}" aria-expanded="true" aria-controls="filterCollapse{{ forloop.counter }}">
+                                        {{ filter.label }}
+                                    </button>
+                                </h2>
+                                <div id="filterCollapse{{ forloop.counter }}" class="accordion-collapse collapse show" aria-labelledby="filterHeading{{ forloop.counter }}">
+                                    <div class="accordion-body">
+                                        {{ filter }}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="col text-center">
+                        <input type="submit" class="btn btn-primary btn-block mt-2" value="Применить" />
+                        <button type="button" class="btn btn-secondary btn-block mt-2" onclick="clearFilters()">Отменить</button>
+                    </div>
+                </form>
                 
             </div>
         </div>
     </div>
 </div>
 {% endblock content %}
+
+
+
+{% block form_title %}Новая практика{% endblock %}
+
+
+{% block form %}
+<form id="form" method="post" action="{% url 'practice-list' %}">
+    {% csrf_token %}
+    <div class="modal-body">
+        {{ form.as_p }}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="error">{{ error }}</div>
+            {% endfor %}
+        {% endfor %}
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </div>
+</form>
+{% endblock %}

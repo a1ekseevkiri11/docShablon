@@ -7,31 +7,43 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">название формы</h5>
+                <h5 class="modal-title" id="exampleModalLabel">{% block form_title %}{% endblock %}</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
             </div>
-            <form method="post" action="">
-                {% csrf_token %}
-                <div class="modal-body">
-                    форма
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Отправить</button>
-                </div>
-            </form>
+            {% block form %}{% endblock %}
         </div>
     </div>
 </div>
+
 <script>
+    $(document).ready(function() {
+        $('#id_direction_of_training').change(function() {
+            var directionId = $(this).val();  // Получаем выбранный id направления обучения
+            $.ajax({
+                url: '{% url "get-groups" %}',    // URL-адрес обработчика AJAX-запроса
+                data: {'direction_id': directionId},  // Передаем выбранный id направления обучения
+                dataType: 'json',
+                success: function(data) {
+                    var groupField = $('#id_group');
+                    groupField.empty();  // Очищаем список групп
+                    $.each(data.groups, function(index, group) {
+                        // Добавляем чекбокс для каждой группы
+                        groupField.append('<input type="checkbox" name="group" value="' + group.id + '">' + group.title + '<br>');
+                    });
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('Произошла ошибка при загрузке групп:', errorThrown);
+                }
+            });
+        });
+    });
+</script>
 
-    function changeActionUrl(url) {
-        document.getElementById("popup_form").action = url;
+
+
+<script>
+    function clearFilters() {
+        window.location.href = window.location.origin + window.location.pathname;
     }
-
-    {% if url_form %}
-        var backendUrl = {{ url_form }};
-        changeActionUrl(backendUrl);
-    {% endif %}
-    
 </script>
 {% endblock %}

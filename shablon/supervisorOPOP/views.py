@@ -5,10 +5,27 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin
 )
 
+from django.urls import (
+    reverse_lazy,
+    reverse,
+)
+
+
 from django.views.generic import (
     ListView,
     DetailView,
     View
+)
+
+from django.db.models import Q
+
+from django.http import JsonResponse
+
+from django.views.generic import (
+    CreateView,
+    UpdateView,
+    DeleteView,
+    ListView
 )
 
 from user.models import (
@@ -17,7 +34,22 @@ from user.models import (
     Practice,
 )
 
+from .filters import PracticeFilter
+
 from registration.permission import isSupervisorOPOP
+
+from .forms import PracticeForm
+
+from .queryset import (
+    get_queryset_practice_for_SupervisorOPOP,
+    get_queryset_group_for_SupervisorOPOP
+)
+
+def get_groups(request):
+    direction_id = request.GET.get('direction_id')  # Получаем id выбранного направления обучения
+    groups = Group.objects.filter(direction_of_training=direction_id)  # Фильтруем группы по выбранному направлению обучения
+    data = [{'id': group.id, 'title': group.title} for group in groups]  # Преобразуем группы в формат JSON
+    return JsonResponse({'groups': data})
 
 
 class SupervisorOPOPMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -26,13 +58,88 @@ class SupervisorOPOPMixin(LoginRequiredMixin, UserPassesTestMixin):
         return isSupervisorOPOP(self.request.user)
     
 
-#TODO сделать фильтры и поиск
 class PracticesListView(ListView, SupervisorOPOPMixin):
     template_name = 'supervisorOPOP/practice_list.html'
     context_object_name = 'practices'
 
+
     def get_queryset(self):
-        return Practice.objects.filter(supervisorOPOP=self.request.user.supervisoropop)
+        
+        queryset = get_queryset_practice_for_SupervisorOPOP(self.request.user.supervisoropop)
+        query = self.request.GET.get('q')
+        filters = self.request.GET
+        
+        if query:
+            queryset = queryset.filter(Q(title__icontains=query))
+        
+        self.filterset = PracticeFilter(filters, queryset=queryset, supervisoropop=self.request.user.supervisoropop,)
+        return self.filterset.qs
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filters'] = self.filterset.form
+        context['applied_filters'] = self.request.GET.urlencode()
+        return context
+    
+
+class PracticesDetailView(DetailView, UserPassesTestMixin):
+    model = Practice
+    template_name = 'supervisorOPOP/practice_detail.html'
+    context_object_name = 'practice'
+
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)            
+        return context
+
+
+class PracticeCreateView(SupervisorOPOPMixin, CreateView):
+
+    template_name = 'supervisorOPOP/practice_new.html'
+    form_class = PracticeForm 
+    success_url = reverse_lazy('practice-list')
+    context_object_name = 'practice'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)   
+        context['direction_of_training'] = self.request.user.supervisoropop.directionoftraining_set.all()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['supervisoropop'] = self.request.user.supervisoropop  # Передаем текущего пользователя в параметрах формы
+        return kwargs
+
+
+
+class PracticeUpdateView(UpdateView, SupervisorOPOPMixin):
+    model = Practice
+    template_name = 'supervisorOPOP/practice_update.html'
+    form_class = PracticeForm
+    success_url = reverse_lazy('practice-list')
+    context_object_name = 'practice'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)   
+        context['direction_of_training'] = self.request.user.supervisoropop.directionoftraining_set.all()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['supervisoropop'] = self.request.user.supervisoropop  # Передаем текущего пользователя в параметрах формы
+        return kwargs
+    
+    def get_success_url(self):
+        return reverse('practice-detail', kwargs={'pk': self.object.pk})
+
+
+class PracticeDeleteView(DeleteView, SupervisorOPOPMixin):
+    model = Practice
+    template_name = 'supervisorOPOP/practice_delete.html'
+    success_url = reverse_lazy('practice-list')
+    context_object_name = 'practice'
+
     
 
 
