@@ -93,7 +93,7 @@ class Practice(models.Model):
     date_start = models.DateField()
     date_end = models.DateField()
     #документ
-    number_decree = models.CharField(max_length=20, choices=kind_choices)
+    number_decree = models.CharField(max_length=20)
     date_decree = models.DateField()
     #адрес
     title_place = models.CharField(max_length=512, default=None)

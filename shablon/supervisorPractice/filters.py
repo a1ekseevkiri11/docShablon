@@ -6,7 +6,7 @@ from user.models import (
     Practice,
     Group,
     DirectionOfTraining,
-    
+    Amount,
 )
 
 from .queryset import (
@@ -17,14 +17,15 @@ from .queryset import (
 
 class PracticeStudentFilter(django_filters.FilterSet):
 
-    remark = django_filters.ModelChoiceFilter(
-        field_name='remark',
-        queryset=PracticeStudent.objects.all(),
+    amount = django_filters.ModelChoiceFilter(
+        field_name='amount__title',
+        queryset=Amount.objects.all(),
         empty_label="Не оценены",
         label="Оценки",
     )
 
     group = django_filters.ModelMultipleChoiceFilter(
+        field_name='practice__group',
         to_field_name='title',
         queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -32,6 +33,7 @@ class PracticeStudentFilter(django_filters.FilterSet):
     )
 
     direction_of_training = django_filters.ModelMultipleChoiceFilter(
+        field_name='practice__group__direction_of_training',
         to_field_name='title',
         queryset=DirectionOfTraining.objects.all(),
         widget=forms.CheckboxSelectMultiple,
@@ -45,7 +47,7 @@ class PracticeStudentFilter(django_filters.FilterSet):
         fields = [
             'direction_of_training', 
             'group', 
-            'remark',
+            'amount',
         ]
 
 

@@ -14,6 +14,7 @@ from .queryset import(
 class PracticeFilter(django_filters.FilterSet):
     
     type = django_filters.ChoiceFilter(
+        field_name='type', 
         choices=Practice.type_choices, 
         widget=forms.RadioSelect,
         label="Тип практики",
@@ -21,6 +22,7 @@ class PracticeFilter(django_filters.FilterSet):
     type.field.empty_label = "Все"
 
     kind = django_filters.ChoiceFilter(
+        field_name='kind', 
         choices=Practice.kind_choices, 
         widget=forms.RadioSelect,
         label="Вид практики",
@@ -28,13 +30,15 @@ class PracticeFilter(django_filters.FilterSet):
     kind.field.empty_label = "Все"
 
     group = django_filters.ModelMultipleChoiceFilter(
+        field_name='group__title', 
         to_field_name='title',
-        queryset=Group.objects.all(),
+        queryset=Group.objects.all(), 
         widget=forms.CheckboxSelectMultiple,
         label="Группы",
     )
 
     direction_of_training = django_filters.ModelMultipleChoiceFilter(
+        field_name='group__direction_of_training__title', 
         to_field_name='title',
         queryset=DirectionOfTraining.objects.all(),
         widget=forms.CheckboxSelectMultiple,
