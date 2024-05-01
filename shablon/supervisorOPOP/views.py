@@ -38,7 +38,7 @@ from .forms import PracticeForm
 
 from .queryset import (
     get_queryset_practice_for_SupervisorOPOP,
-    get_queryset_group_for_SupervisorOPOP
+    
 )
 
 def get_groups(request):
@@ -48,10 +48,18 @@ def get_groups(request):
     return JsonResponse({'groups': data})
 
 
+def practice_test_func(practice, supervisoropop):
+    practice = get_queryset_practice_for_SupervisorOPOP(supervisoropop)
+    return practice.filter(id=practice.id).exists()
+
+
 class SupervisorOPOPMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def extra_test_func(self):
+        return True
     
     def test_func(self):
-        return isSupervisorOPOP(self.request.user)
+        return isSupervisorOPOP(self.request.user) and self.extra_test_func()
     
 
 class PracticesListView(ListView, SupervisorOPOPMixin):
@@ -115,6 +123,10 @@ class PracticeUpdateView(UpdateView, SupervisorOPOPMixin):
     form_class = PracticeForm
     context_object_name = 'practice'
 
+    def extra_test_func(self):
+        return practice_test_func(self.object, self.request.user.supervisoropop)
+    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)   
         context['direction_of_training'] = self.request.user.supervisoropop.directionoftraining_set.all()
@@ -135,6 +147,9 @@ class PracticeDeleteView(DeleteView, SupervisorOPOPMixin):
     template_name = 'supervisorOPOP/practice_delete.html'
     success_url = reverse_lazy('practice-list')
     context_object_name = 'practice'
+
+    def extra_test_func(self):
+        return practice_test_func(self.object, self.request.user.supervisoropop)
 
     
 

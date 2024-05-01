@@ -4,6 +4,7 @@ from user.models import (
     SupervisorPractice,
 )
 
+
 def isStudent(user):
     return Student.objects.filter(user=user).exists()
 

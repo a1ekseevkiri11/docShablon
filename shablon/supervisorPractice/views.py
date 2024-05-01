@@ -44,9 +44,12 @@ from django.urls import (
 
 
 class SupervisorPracticeMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def extra_test_func(self):
+        return True
     
     def test_func(self):
-        return isSupervisorPractice(self.request.user)
+        return isSupervisorPractice(self.request.user) and self.extra_test_func()
 
 
 
@@ -92,5 +95,9 @@ class PracticeStudentUpdateView(UpdateView, SupervisorPracticeMixin):
     model = PracticeStudent
     form_class = PracticeStudentFormSupervisorPractice
 
+    def extra_test_func(self):
+        return self.object.practice.supervisor_practice == self.request.user.supervisorpractice
+
     def get_success_url(self):
         return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': self.object.id})
+    

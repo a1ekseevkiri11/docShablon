@@ -38,12 +38,18 @@ from django.urls import (
 from django.http import HttpResponseRedirect
 
 
+def practice_student_test_func(practice_student, student):
+    return practice_student.student == student
+
 
 
 class StudentMixin(LoginRequiredMixin, UserPassesTestMixin):
+
+    def extra_test_func(self):
+        return True
     
     def test_func(self):
-        return isStudent(self.request.user)
+        return isStudent(self.request.user) and self.extra_test_func()
 
 
 
@@ -66,6 +72,7 @@ class PracticeDetailView(View, StudentMixin):
 
         try:
             practice_student = PracticeStudent.objects.get(practice=practice)
+            
         except PracticeStudent.DoesNotExist:
             practice_student = None
 
@@ -88,13 +95,16 @@ class PracticeStudentCreateView(CreateView):
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
     
+    def extra_test_func(self):
+        return practice_student_test_func(self.object, self.request.user.student)
+    
     def get_success_url(self):
         practice_id = self.kwargs['practice_pk']
         return reverse('student-practice-detail', kwargs={'pk': practice_id})
 
 
 class PracticeStudentUpdateView(UpdateView, StudentMixin):
-    model = PracticeStudent
+    model = PracticeStudent 
     template_name = 'student/practice_student_form.html'
     form_class = PracticeStudentFormStudent
 
@@ -106,6 +116,9 @@ class PracticeStudentUpdateView(UpdateView, StudentMixin):
         self.object.student = self.request.user.student
         self.object.save()
         return HttpResponseRedirect(self.get_success_url())
+    
+    def extra_test_func(self):
+        return practice_student_test_func(self.object, self.request.user.student)
 
     def get_success_url(self):
         practice_id = self.kwargs['practice_id']
