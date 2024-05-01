@@ -1,0 +1,22 @@
+{% extends "supervisorPractice/base.html" %}
+
+{% block title %}{{ practice.title }}{% endblock %}
+
+{% block content %}
+{% include "supervisorOPOP/practice_detail_card.html" %}
+<hr>
+<h5>Отчет</h5>
+<p>Тип стажировки: {{ practice_student.type }}</p>
+<p>Оплачиваемая: {{ practice_student.pay }}</p>
+{% if practice_student.amount %}
+    <hr>
+    <h5>Оценка</h5>
+    <p>Как справлялся с трудностями: {{ practice_student.hard_quality }}</p>
+    <p>Продемонстрированные качества: {{ practice_student.quality }}</p>
+    <p>Объем выполненного задания: {{ practice_student.amount }}</p>
+    <p>Замечения: {{ practice_student.remark }}</p>
+    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'supervisor-practice-practice-student-update' pk=practice_student.id%}">Изменить оценку</a>
+{% else %}
+    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'supervisor-practice-practice-student-update' pk=practice_student.id%}">Оценить</a>
+{% endif %}
+{% endblock content %}

@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 
 from django.contrib.auth.mixins import (
     LoginRequiredMixin, 
@@ -15,11 +15,31 @@ from django.views.generic import (
     ListView
 )
 
+from django.db.models import Q
+
 
 from registration.permission import isSupervisorPractice
 
 from user.models import (
-    PracticeStudent
+    PracticeStudent,
+    Practice
+)
+
+from .forms import (
+    PracticeStudentFormSupervisorPractice,
+)
+
+from .filters import (
+    PracticeStudentFilter,
+)
+
+from .queryset import (
+    get_queryset_practice_student_for_SupervisorPractice,
+)
+
+from django.urls import (
+    reverse_lazy,
+    reverse,
 )
 
 
@@ -35,19 +55,42 @@ class PracticeStudentListView(ListView, SupervisorPracticeMixin):
     template_name = 'supervisorPractice/practice_student_list.html'
     context_object_name = 'practices'
 
-    model = PracticeStudent
+
+    def get_queryset(self):
+        queryset = get_queryset_practice_student_for_SupervisorPractice(self.request.user.supervisorpractice)
+        query = self.request.GET.get('q')
+        filters = self.request.GET
+        
+        if query:
+            queryset = queryset.filter(Q(title__icontains=query))
+        
+        self.filterset = PracticeStudentFilter(filters, queryset=queryset, supervisorpractice=self.request.user.supervisorpractice,)
+        return self.filterset.qs
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['filters'] = self.filterset.form
+        context['applied_filters'] = self.request.GET.urlencode()
+        return context
 
 
 
-class PracticeDetailView(View, SupervisorPracticeMixin):
-    # + выводить отчет если он уже есть, его можно будет только создать 
-    # и редактировать
-    pass
+class PracticeStudentDetailView(View, SupervisorPracticeMixin):
+    template_name = 'supervisorPractice/practice_student_detail.html'
 
-
-class PracticeStudentCreateView(CreateView, SupervisorPracticeMixin):
-    pass
+    def get(self, request, pk):
+        practice_student = get_object_or_404(PracticeStudent, pk=pk)
+        context = {}
+        context['practice'] = practice_student.practice
+        context['practice_student'] = practice_student
+        return render(request, self.template_name, context)
 
 
 class PracticeStudentUpdateView(UpdateView, SupervisorPracticeMixin):
-    pass
+    template_name = 'supervisorPractice/practice_student_form.html'
+    model = PracticeStudent
+    form_class = PracticeStudentFormSupervisorPractice
+
+    def get_success_url(self):
+        return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': self.object.id})

@@ -4,7 +4,7 @@
             
             <h5 class="card-title">{{ practice.student }}</h5>
             <p class="card-title">Отчет по практике: {{ practice.practice.title }}</p>
-            <a href="" class="btn btn-info">Подробнее</a>
+            <a href="{% url 'supervisor-practice-practice-student-detail' pk=practice.id%}" class="btn btn-info">Подробнее</a>
         </div>
     </div>
 </div>

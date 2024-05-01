@@ -73,9 +73,6 @@ class PracticeDetailView(View, StudentMixin):
         return render(request, self.template_name, context)
 
 
-    # + выводить отчет если он уже есть, его можно будет только создать 
-    # и редактировать
-
 
 class PracticeStudentCreateView(CreateView):
     model = PracticeStudent

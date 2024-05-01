@@ -119,14 +119,13 @@ class PracticeStudent(models.Model):
     )
 
     student = models.OneToOneField(Student, on_delete=models.CASCADE)
-    practice =  models.ForeignKey(Practice, on_delete=models.CASCADE, default=None)
+    practice =  models.ForeignKey(Practice, on_delete=models.CASCADE, null=True)
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
     hard_quality =  models.TextField(null=True)
     quality =  models.TextField(null=True)
     amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
     remark = models.TextField(null=True)
-    #TODO добавить руководителя практики от организации
     
     def __str__(self):
         return "Отчет " + self.practice.title
