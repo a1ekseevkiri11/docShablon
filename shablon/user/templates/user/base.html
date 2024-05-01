@@ -44,6 +44,12 @@
                                             <a class="dropdown-item" href="{% url 'practice-list'%}">Практики</a>  
                                             <a class="dropdown-item" href="{% url 'practice-new'%}">Создать новую практику</a>                                      
                                         {% endif %}
+                                        {% if user.student %}
+                                            <a class="dropdown-item" href="{% url 'student-practice-list'%}">Мои практики</a>     
+                                        {% endif %}
+                                        {% if user.supervisorpractice %}
+                                            <a class="dropdown-item" href="{% url 'supervisor-practice-practice-student-list'%}">Отчеты студентов</a>     
+                                        {% endif %}
                                         <hr class="dropdown-divider">
                                         <form method="post" action="{% url 'logout' %}">
                                             {% csrf_token %}
