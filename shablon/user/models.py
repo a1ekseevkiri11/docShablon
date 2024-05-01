@@ -72,7 +72,6 @@ class Amount(models.Model):
     
 
     
-
 class Practice(models.Model):
 
 
@@ -99,6 +98,9 @@ class Practice(models.Model):
     #адрес
     title_place = models.CharField(max_length=512, default=None)
     adress_place = models.CharField(max_length=512, default=None)
+    #связь руководителей практики
+    supervisor_practice = models.ForeignKey(SupervisorPractice, on_delete=models.SET_NULL, null=True)
+
     #TODO поле руководителя от ЮГУ
     #TODO поле руководителя от предприятия
 
@@ -106,6 +108,8 @@ class Practice(models.Model):
     def __str__(self):
         return self.title
     
+
+
 
 
 class PracticeStudent(models.Model):
@@ -118,21 +122,14 @@ class PracticeStudent(models.Model):
     practice =  models.ForeignKey(Practice, on_delete=models.CASCADE, default=None)
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
-    hard_quality =  models.TimeField()
-    quality =  models.TimeField()
+    hard_quality =  models.TextField(null=True)
+    quality =  models.TextField(null=True)
     amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
-    remark = models.TimeField()
+    remark = models.TextField(null=True)
     #TODO добавить руководителя практики от организации
     
     def __str__(self):
-        return self.title
-
-
-
-
-
-
-
+        return "Отчет " + self.practice.title
 
 
 def generate_upload_path(instance, filename):
@@ -140,15 +137,11 @@ def generate_upload_path(instance, filename):
     path = os.path.join('uploads', today.strftime('%Y/%m/%d'))
     return os.path.join(path, filename)
 
-
 class Report(models.Model):
-
-
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE,
+        'auth.User', on_delete=models.CASCADE,
     )
     file = models.FileField(upload_to=generate_upload_path)
-
 
     def __str__(self):
         return self.user.username

@@ -1,0 +1,18 @@
+{% extends "student/base.html" %}
+
+{% block title %}Отчет{% endblock %}
+
+{% block content %}
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+    <button type="button" class="btn btn-secondary" id="cancel-btn">Отмена</button>
+</form>
+
+{% endblock content %}
+
+
+
+
+

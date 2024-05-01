@@ -11,17 +11,13 @@ from django.urls import (
 )
 
 
-from django.views.generic import (
-    ListView,
-    DetailView,
-    View
-)
-
 from django.db.models import Q
 
 from django.http import JsonResponse
 
 from django.views.generic import (
+    DetailView,
+    View,
     CreateView,
     UpdateView,
     DeleteView,
@@ -94,7 +90,7 @@ class PracticesDetailView(DetailView, UserPassesTestMixin):
         return context
 
 
-class PracticeCreateView(SupervisorOPOPMixin, CreateView):
+class PracticeCreateView(CreateView, SupervisorOPOPMixin):
 
     template_name = 'supervisorOPOP/practice_new.html'
     form_class = PracticeForm 
@@ -117,7 +113,6 @@ class PracticeUpdateView(UpdateView, SupervisorOPOPMixin):
     model = Practice
     template_name = 'supervisorOPOP/practice_update.html'
     form_class = PracticeForm
-    success_url = reverse_lazy('practice-list')
     context_object_name = 'practice'
 
     def get_context_data(self, **kwargs):

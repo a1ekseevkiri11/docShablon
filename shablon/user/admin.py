@@ -21,5 +21,10 @@ class GroupAdmin(admin.ModelAdmin):
     
 admin.site.register(Group, GroupAdmin)
 admin.site.register(Institute)
-admin.site.register(Practice)
+
+class PracticeAdmin(admin.ModelAdmin):
+    filter_horizontal = ('group',)
+
+admin.site.register(Practice, PracticeAdmin)
+
 admin.site.register(PracticeStudent)

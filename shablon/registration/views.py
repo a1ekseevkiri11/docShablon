@@ -22,12 +22,15 @@ class CustomLoginView(LoginView):
 
     def get_success_url(self):
         if permission.isStudent(self.request.user):
-            return reverse_lazy('report')
+            return reverse_lazy('student-practice-list')
         
         if permission.isSupervisorOPOP(self.request.user):
             return reverse_lazy('practice-list')
         
-        #TODO:  дописать для всех групп
+        if permission.isSupervisorPractice(self.request.user):
+            return reverse_lazy('supervisor-practice-practice-student-list')
+        
+
         return reverse_lazy('yes')
 
 
