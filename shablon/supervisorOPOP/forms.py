@@ -21,9 +21,35 @@ class PracticeForm(forms.ModelForm):
         required=False
     )
 
+    date_start = forms.DateField(
+        label="Дата начала",
+        required=True,
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+        input_formats=["%Y-%m-%d"]
+    )
+
+    date_end = forms.DateField(
+        label="Дата окончания",
+        required=True,
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+        input_formats=["%Y-%m-%d"]
+    )
+
+    date_decree = forms.DateField(
+        label="Дата подписания документа",
+        required=True,
+        widget=forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
+        input_formats=["%Y-%m-%d"]
+    )
+
     def __init__(self, supervisoropop, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['group'].queryset = get_queryset_group_for_SupervisorOPOP(supervisoropop)
+
+        instance = kwargs.get('instance')
+        self.fields['date_start'].widget.attrs['value'] = instance.date_start.strftime('%Y-%m-%d')
+        self.fields['date_end'].widget.attrs['value'] = instance.date_end.strftime('%Y-%m-%d')
+        self.fields['date_decree'].widget.attrs['value'] = instance.date_decree.strftime('%Y-%m-%d')
 
     class Meta:
         model = Practice
