@@ -8,7 +8,10 @@ class Profile(models.Model):
     user = models.OneToOneField(
         User, on_delete=models.CASCADE,
     )
-    patronymic = models.CharField(max_length=256)
+    first_name = models.CharField(max_length=64, null=True)
+    last_name = models.CharField(max_length=64, null=True)
+    patronymic = models.CharField(max_length=64, null=True)
+
 
 
     class Meta:

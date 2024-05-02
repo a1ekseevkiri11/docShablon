@@ -9,12 +9,18 @@ from user.models import (
     SupervisorOPOP,
 )
 
-class StudentRegistrationForm(UserCreationForm):
+class ProfileRegistrationForm(UserCreationForm):
+    first_name = forms.CharField(required=False, help_text='Имя')
+    last_name = forms.CharField(required=False, help_text='Фамилия')
+    patronymic = forms.CharField(required=False, help_text='Отчество')
+
+
+class StudentRegistrationForm(ProfileRegistrationForm):
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields + ('group',)
+        fields = ('username', 'last_name', 'first_name',  'patronymic', 'group', 'password1', 'password2')
 
     def save(self, commit=True):
         user = super().save(commit=False)
@@ -24,12 +30,12 @@ class StudentRegistrationForm(UserCreationForm):
         return user
     
 
-class SupervisorOPOPRegistrationForm(UserCreationForm):
+class SupervisorOPOPRegistrationForm(ProfileRegistrationForm):
 
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields
+        fields = ('username', 'last_name', 'first_name',  'patronymic', 'password1', 'password2')
 
 
     def save(self, commit=True):
@@ -41,12 +47,12 @@ class SupervisorOPOPRegistrationForm(UserCreationForm):
 
 
 
-class SupervisorPracticeRegistrationForm(UserCreationForm):
+class SupervisorPracticeRegistrationForm(ProfileRegistrationForm):
 
 
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = UserCreationForm.Meta.fields
+        fields = ('username', 'last_name', 'first_name',  'patronymic', 'password1', 'password2')
     
 
     def save(self, commit=True):

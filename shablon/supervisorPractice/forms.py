@@ -17,5 +17,6 @@ class PracticeStudentFormSupervisorPractice(forms.ModelForm):
             'quality',
             'amount',
             'remark',
+            'rating',
         ]
 

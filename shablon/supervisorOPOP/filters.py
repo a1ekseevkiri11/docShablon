@@ -31,7 +31,6 @@ class PracticeFilter(django_filters.FilterSet):
 
     group = django_filters.ModelMultipleChoiceFilter(
         field_name='group__title', 
-        to_field_name='title',
         queryset=Group.objects.all(), 
         widget=forms.CheckboxSelectMultiple,
         label="Группы",
@@ -39,7 +38,6 @@ class PracticeFilter(django_filters.FilterSet):
 
     direction_of_training = django_filters.ModelMultipleChoiceFilter(
         field_name='group__direction_of_training__title', 
-        to_field_name='title',
         queryset=DirectionOfTraining.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label="Направления подготовки",

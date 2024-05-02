@@ -6,12 +6,16 @@ from datetime import datetime
 
 from registration.models import Profile
 
+class AbstractSupervisor(Profile):
+    post = models.CharField(max_length=256, null=True)
+    class Meta:
+        abstract = True
 
-class SupervisorOPOP(Profile):
+class SupervisorOPOP(AbstractSupervisor):
     pass
 
 
-class SupervisorPractice(Profile):
+class SupervisorPractice(AbstractSupervisor):
     pass
 
 
@@ -46,10 +50,8 @@ class Group(models.Model):
         ('PhD', 'Аспирантура'),
     )
 
-
-    title = models.CharField(max_length=256)
-    number = models.CharField(max_length=10)
-    direction_of_training = models.ManyToManyField(DirectionOfTraining)
+    title = models.CharField(max_length=10)
+    direction_of_training = models.ForeignKey(DirectionOfTraining, on_delete=models.CASCADE, null=True)
     level = models.CharField(max_length=20, choices=level_choices)
     year = models.PositiveIntegerField()
 
@@ -76,13 +78,16 @@ class Practice(models.Model):
 
 
     type_choices = (
-        ('type1', 'Тип 1'),
-        ('type2', 'Тип 2'),
+        ('type1', 'преддипломная'),
+        ('type2', 'ознакомительная'),
+        ('type2', 'технологическая'),
+        ('type2', 'производственна'),
+        ('type2', 'научно-исследовательская'),
     )
 
     kind_choices = (
-        ('kind1', 'Вид 1'),
-        ('kind2', 'Вид 2'),
+        ('kind1', 'учебная'),
+        ('kind2', 'производственная'),
     )
 
 
@@ -96,6 +101,7 @@ class Practice(models.Model):
     #документ
     number_decree = models.CharField(max_length=20)
     date_decree = models.DateField()
+
     #адрес
     title_place = models.CharField(max_length=512, null=True)
     adress_place = models.CharField(max_length=512, null=True)
@@ -120,8 +126,15 @@ class Practice(models.Model):
 
 class PracticeStudent(models.Model):
     type_choices = (
-        ('type1', 'Тип 1'),
-        ('type2', 'Тип 2'),
+        ('long_term', 'долгосрочный'),
+        ('краткосрочный', 'краткосрочный'),
+    )
+
+    rating_choices = (
+        ("2", "2"),
+        ("3", "3"),
+        ("4", "4"),
+        ("5", "5"),
     )
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -133,6 +146,7 @@ class PracticeStudent(models.Model):
     quality =  models.TextField(null=True)
     amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
     remark = models.TextField(null=True)
+    rating = models.CharField(max_length=2, choices=rating_choices, null=True)
     
     def __str__(self):
         return "Отчет " + self.practice.title
