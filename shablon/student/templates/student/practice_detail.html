@@ -4,12 +4,17 @@
 
 {% block content %}
 {% include "supervisorOPOP/practice_detail_card.html" %}
+{% include "student/practice_student_detail_card.html" %}
 {% if practice_student %}
-    <h5>Отчет</h5>
-    <p>Тип стажировки: {{ practice_student.type }}</p>
-    <p>Оплачиваемая: {{ practice_student.pay }}</p>
     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'student-practice-student-update' practice_id=practice.id pk=practice_student.id %}">Редактировать</a>
 {% else %}
     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'student-practice-student-new' practice_pk=practice.id %}">Написать отчет</a>
+{% endif %}
+{% include "supervisorPractice/practice_student_detail_card.html" %}
+{% if practice_student.amount %}
+    <form action="{% url 'student-practice-detail' practice.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit">Скачать отчет</button>
+    </form>
 {% endif %}
 {% endblock content %}

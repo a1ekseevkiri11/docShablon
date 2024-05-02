@@ -92,18 +92,24 @@ class Practice(models.Model):
     kind = models.CharField(max_length=20, choices=kind_choices)
     date_start = models.DateField()
     date_end = models.DateField()
+
     #документ
     number_decree = models.CharField(max_length=20)
     date_decree = models.DateField()
     #адрес
-    title_place = models.CharField(max_length=512, default=None)
-    adress_place = models.CharField(max_length=512, default=None)
+    title_place = models.CharField(max_length=512, null=True)
+    adress_place = models.CharField(max_length=512, null=True)
+
     #связь руководителей практики
     supervisor_practice = models.ForeignKey(SupervisorPractice, on_delete=models.SET_NULL, null=True)
 
-    #TODO поле руководителя от ЮГУ
-    #TODO поле руководителя от предприятия
+    #руководителя от ЮГУ
+    fio_supervisor_YuSU = models.CharField(max_length=512, null=True)
+    post_supervisor_YuSU = models.CharField(max_length=512, null=True)
 
+    #руководитель от организации
+    fio_supervisor_company = models.CharField(max_length=512, null=True)
+    post_supervisor_company = models.CharField(max_length=512, null=True)
 
     def __str__(self):
         return self.title
@@ -119,7 +125,8 @@ class PracticeStudent(models.Model):
     )
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    practice =  models.ForeignKey(Practice, on_delete=models.CASCADE, null=True)
+    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, null=True)
+    production_tasks = models.TextField(null=True)
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
     hard_quality =  models.TextField(null=True)
@@ -136,11 +143,3 @@ def generate_upload_path(instance, filename):
     path = os.path.join('uploads', today.strftime('%Y/%m/%d'))
     return os.path.join(path, filename)
 
-class Report(models.Model):
-    user = models.ForeignKey(
-        'auth.User', on_delete=models.CASCADE,
-    )
-    file = models.FileField(upload_to=generate_upload_path)
-
-    def __str__(self):
-        return self.user.username

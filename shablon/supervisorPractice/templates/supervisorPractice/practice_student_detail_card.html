@@ -1,0 +1,8 @@
+{% if practice_student.amount %}
+    <hr>
+    <h5>Оценка</h5>
+    <p>Как справлялся с трудностями: {{ practice_student.hard_quality }}</p>
+    <p>Продемонстрированные качества: {{ practice_student.quality }}</p>
+    <p>Объем выполненного задания: {{ practice_student.amount }}</p>
+    <p>Замечения: {{ practice_student.remark }}</p>
+{% endif %}

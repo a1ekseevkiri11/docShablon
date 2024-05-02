@@ -1,0 +1,7 @@
+{% if practice_student %}
+    <hr>
+    <h5>Отчет</h5>
+    <p>Тип стажировки: {{ practice_student.type }}</p>
+    <p>Оплачиваемая: {{ practice_student.pay }}</p>
+    <p>Производственные задачи: {{ practice_student.production_tasks }}</p>
+{% endif %}

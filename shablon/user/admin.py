@@ -16,10 +16,9 @@ class DirectionOfTrainingAdmin(admin.ModelAdmin):
 
 admin.site.register(DirectionOfTraining, DirectionOfTrainingAdmin)
 
-class GroupAdmin(admin.ModelAdmin):
-    filter_horizontal = ('direction_of_training',)
+
     
-admin.site.register(Group, GroupAdmin)
+admin.site.register(Group)
 admin.site.register(Institute)
 
 class PracticeAdmin(admin.ModelAdmin):

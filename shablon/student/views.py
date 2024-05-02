@@ -3,8 +3,11 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin
 )
 
+from io import BytesIO
+from docxtpl import DocxTemplate
+
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
 
 from django.views.generic import (
@@ -56,6 +59,7 @@ class StudentMixin(LoginRequiredMixin, UserPassesTestMixin):
 class PracticeListView(ListView, StudentMixin):
     template_name = 'student/practice_list.html' 
     context_object_name = 'practices'
+    paginate_by = 1
 
     def get_queryset(self):
         return Practice.objects.filter(group=self.request.user.student.group)
@@ -78,6 +82,39 @@ class PracticeDetailView(View, StudentMixin):
 
         context['practice_student'] = practice_student
         return render(request, self.template_name, context)
+    
+
+    def post(self, request, pk):
+        practice = get_object_or_404(Practice, pk=pk)
+        context = {}
+        context['practice'] = practice
+
+        try:
+            practice_student = PracticeStudent.objects.get(practice=practice)
+
+        except PracticeStudent.DoesNotExist:
+            return HttpResponseBadRequest("Нет отчета")
+        
+        if not practice_student.amount:
+            return HttpResponseBadRequest("Нет оценки отчета")
+        
+        
+        context = {
+            'practice': practice, 
+            'practice_student': practice_student,
+        }
+
+        print(practice.get_kind_display)
+
+        tpl = DocxTemplate("C://Users//79828//Desktop//docShablon//shablon//student//shablon//practice_diary_template.docx")
+        tpl.render(context)
+        output = BytesIO()
+        tpl.save(output)
+        output.seek(0)
+        response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = f'attachment; filename="generated_report.docx"'
+
+        return response
 
 
 
@@ -123,3 +160,6 @@ class PracticeStudentUpdateView(UpdateView, StudentMixin):
     def get_success_url(self):
         practice_id = self.kwargs['practice_id']
         return reverse('student-practice-detail', kwargs={'pk': practice_id})
+    
+
+

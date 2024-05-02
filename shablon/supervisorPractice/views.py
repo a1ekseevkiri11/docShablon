@@ -57,6 +57,7 @@ class SupervisorPracticeMixin(LoginRequiredMixin, UserPassesTestMixin):
 class PracticeStudentListView(ListView, SupervisorPracticeMixin):
     template_name = 'supervisorPractice/practice_student_list.html'
     context_object_name = 'practices'
+    paginate_by = 1
 
 
     def get_queryset(self):

@@ -14,4 +14,5 @@ class PracticeStudentFormStudent(forms.ModelForm):
         fields = [
             'type',
             'pay',
+            'production_tasks',
         ]

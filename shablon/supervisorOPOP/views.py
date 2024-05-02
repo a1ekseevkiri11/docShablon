@@ -65,6 +65,7 @@ class SupervisorOPOPMixin(LoginRequiredMixin, UserPassesTestMixin):
 class PracticesListView(ListView, SupervisorOPOPMixin):
     template_name = 'supervisorOPOP/practice_list.html'
     context_object_name = 'practices'
+    paginate_by = 1
 
 
     def get_queryset(self):

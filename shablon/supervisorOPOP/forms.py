@@ -47,9 +47,10 @@ class PracticeForm(forms.ModelForm):
         self.fields['group'].queryset = get_queryset_group_for_SupervisorOPOP(supervisoropop)
 
         instance = kwargs.get('instance')
-        self.fields['date_start'].widget.attrs['value'] = instance.date_start.strftime('%Y-%m-%d')
-        self.fields['date_end'].widget.attrs['value'] = instance.date_end.strftime('%Y-%m-%d')
-        self.fields['date_decree'].widget.attrs['value'] = instance.date_decree.strftime('%Y-%m-%d')
+        if instance:
+            self.fields['date_start'].widget.attrs['value'] = instance.date_start.strftime('%Y-%m-%d')
+            self.fields['date_end'].widget.attrs['value'] = instance.date_end.strftime('%Y-%m-%d')
+            self.fields['date_decree'].widget.attrs['value'] = instance.date_decree.strftime('%Y-%m-%d')
 
     class Meta:
         model = Practice
@@ -63,7 +64,12 @@ class PracticeForm(forms.ModelForm):
             'number_decree',
             'date_decree',
             'title_place',
-            'adress_place'
+            'adress_place',
+            'fio_supervisor_YuSU',
+            'post_supervisor_YuSU',
+            'fio_supervisor_company',
+            'post_supervisor_company',
+            'supervisor_practice',
         ]
         widgets = {
             'date_start': DateInput(attrs={'type': 'date'}),
