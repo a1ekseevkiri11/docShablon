@@ -3,18 +3,29 @@
 {% block title %}{{ practice.title }}{% endblock %}
 
 {% block content %}
+
 {% include "supervisorOPOP/practice_detail_card.html" %}
+
 {% include "student/practice_student_detail_card.html" %}
+
 {% if practice_student %}
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'student-practice-student-update' practice_id=practice.id pk=practice_student.id %}">Редактировать</a>
-{% else %}
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'student-practice-student-new' practice_pk=practice.id %}">Написать отчет</a>
+    <form method="post" enctype="multipart/form-data" class="mt-3" action="{% url 'student-practice-student-parse-file' practice_id=practice.id %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="csvFile">Загрузить CSV файл</label>
+            <input type="file" class="form-control-file" id="csvFile" name="csv_file" accept=".csv">
+        </div>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+    </form>
 {% endif %}
+
 {% include "supervisorPractice/practice_student_detail_card.html" %}
+
 {% if practice_student.amount %}
     <form action="{% url 'student-practice-detail' practice.id %}" method="post">
         {% csrf_token %}
         <button type="submit">Скачать отчет</button>
     </form>
 {% endif %}
+
 {% endblock content %}

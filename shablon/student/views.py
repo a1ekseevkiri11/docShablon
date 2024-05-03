@@ -5,10 +5,13 @@ from django.contrib.auth.mixins import (
 
 from io import BytesIO
 from docxtpl import DocxTemplate
+from datetime import datetime
 
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views import View
+
+from django.shortcuts import get_object_or_404
 
 from django.views.generic import (
     ListView,
@@ -20,18 +23,18 @@ from django.views.generic import (
     ListView
 )
 
+import csv
+from io import TextIOWrapper
+
 from registration.permission import isStudent
 
 from user.models import (
     PracticeStudent,
     Practice,
+    StudentProductionTasks,
 )
 
 from django.shortcuts import render, get_object_or_404
-
-from .forms import (
-    PracticeStudentFormStudent,
-)
 
 from django.urls import (
     reverse_lazy,
@@ -40,6 +43,13 @@ from django.urls import (
 
 from django.http import HttpResponseRedirect
 
+from .utils import practice_student_test_func
+
+from .forms import (
+    CSVFileUploadForm,
+)
+
+import csv
 
 def practice_student_test_func(practice_student, student):
     return practice_student.student == student
@@ -75,7 +85,7 @@ class PracticeDetailView(View, StudentMixin):
         context['practice'] = practice
 
         try:
-            practice_student = PracticeStudent.objects.get(practice=practice)
+            practice_student = PracticeStudent.objects.get(practice=practice, student=self.request.user.student)
             
         except PracticeStudent.DoesNotExist:
             practice_student = None
@@ -104,8 +114,6 @@ class PracticeDetailView(View, StudentMixin):
             'practice_student': practice_student,
         }
 
-        print(practice.get_kind_display)
-
         tpl = DocxTemplate("C://Users//79828//Desktop//docShablon//shablon//student//shablon//practice_diary_template.docx")
         tpl.render(context)
         output = BytesIO()
@@ -115,51 +123,46 @@ class PracticeDetailView(View, StudentMixin):
         response['Content-Disposition'] = f'attachment; filename="generated_report.docx"'
 
         return response
-
-
-
-class PracticeStudentCreateView(CreateView):
-    model = PracticeStudent
-    template_name = 'student/practice_student_form.html'
-    form_class = PracticeStudentFormStudent
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        practice_id = self.kwargs['practice_pk']
-        practice = get_object_or_404(Practice, pk=practice_id)
-        self.object.practice = practice
-        self.object.student = self.request.user.student
-        self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
-    
-    def extra_test_func(self):
-        return practice_student_test_func(self.object, self.request.user.student)
-    
-    def get_success_url(self):
-        practice_id = self.kwargs['practice_pk']
-        return reverse('student-practice-detail', kwargs={'pk': practice_id})
-
-
-class PracticeStudentUpdateView(UpdateView, StudentMixin):
-    model = PracticeStudent 
-    template_name = 'student/practice_student_form.html'
-    form_class = PracticeStudentFormStudent
-
-    def form_valid(self, form):
-        self.object = form.save(commit=False)
-        practice_id = self.kwargs['practice_id']
-        practice = get_object_or_404(Practice, pk=practice_id)
-        self.object.practice = practice
-        self.object.student = self.request.user.student
-        self.object.save()
-        return HttpResponseRedirect(self.get_success_url())
     
     def extra_test_func(self):
         return practice_student_test_func(self.object, self.request.user.student)
 
+
+
+class StudentProductionTasksCreateView(View, StudentMixin):
+    model = StudentProductionTasks
+    form_class = CSVFileUploadForm
+
+    def post(self, request, *args, **kwargs):
+        practice_id = self.kwargs['practice_id']
+        practice = get_object_or_404(Practice, pk=practice_id)
+        practice_student, created = PracticeStudent.objects.get_or_create(practice=practice, student=self.request.user.student)
+        StudentProductionTasks.objects.filter(practice_student=practice_student).delete()
+        form = self.form_class(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = form.cleaned_data['csv_file']
+            csv_text = TextIOWrapper(uploaded_file, encoding='utf-8')
+            csv_reader = csv.DictReader(csv_text)
+
+            for row in csv_reader:
+                title = row.get('Subject')
+                data_str = row.get('Updated')
+                
+                data = datetime.strptime(data_str, '%d/%m/%Y %I:%M %p').date()
+                
+                StudentProductionTasks.objects.create(title=title, data=data, practice_student=practice_student)
+
+        return HttpResponseRedirect(self.get_success_url())
+    
     def get_success_url(self):
         practice_id = self.kwargs['practice_id']
         return reverse('student-practice-detail', kwargs={'pk': practice_id})
+
+    def extra_test_func(self):
+        return practice_student_test_func(self.object, self.request.user.student)
+    
+
+
     
 
 

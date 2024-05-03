@@ -10,54 +10,70 @@ from user.models import (
 )
 
 class ProfileRegistrationForm(UserCreationForm):
-    first_name = forms.CharField(required=False, help_text='Имя')
-    last_name = forms.CharField(required=False, help_text='Фамилия')
-    patronymic = forms.CharField(required=False, help_text='Отчество')
+    first_name = forms.CharField(required=True, help_text='Имя')
+    last_name = forms.CharField(required=True, help_text='Фамилия')
+    patronymic = forms.CharField(required=True, help_text='Отчество')
 
 
 class StudentRegistrationForm(ProfileRegistrationForm):
+
     group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
 
-    class Meta(UserCreationForm.Meta):
+    class Meta(ProfileRegistrationForm.Meta):
         model = User
         fields = ('username', 'last_name', 'first_name',  'patronymic', 'group', 'password1', 'password2')
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        if commit:
-            user.save()
-            student = Student.objects.create(user=user, group=self.cleaned_data['group'])
+        user.save()
+        student = Student.objects.create(
+            user=user, 
+            group=self.cleaned_data['group'],
+            first_name = self.cleaned_data['first_name'],
+            last_name = self.cleaned_data['last_name'],
+            patronymic = self.cleaned_data['patronymic'],
+            )
         return user
     
 
-class SupervisorOPOPRegistrationForm(ProfileRegistrationForm):
+class AbstractSupervisorRegistrationForm(ProfileRegistrationForm):
 
+    post = forms.CharField(required=True, help_text='Пост')
 
-    class Meta(UserCreationForm.Meta):
+    class Meta(ProfileRegistrationForm.Meta):
+        abstract = True
         model = User
-        fields = ('username', 'last_name', 'first_name',  'patronymic', 'password1', 'password2')
+        fields = ('username', 'post', 'last_name', 'first_name',  'patronymic', 'password1', 'password2')
+    
+
+class SupervisorOPOPRegistrationForm(AbstractSupervisorRegistrationForm):
 
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        if commit:
-            user.save()
-            supervisorOPOP = SupervisorOPOP.objects.create(user=user)
+        user.save()
+        supervisorOPOP = SupervisorOPOP.objects.create(
+            user=user, 
+            post=self.cleaned_data['post'],
+            first_name = self.cleaned_data['first_name'],
+            last_name = self.cleaned_data['last_name'],
+            patronymic = self.cleaned_data['patronymic'],
+            )
         return user
 
 
 
-class SupervisorPracticeRegistrationForm(ProfileRegistrationForm):
+class SupervisorPracticeRegistrationForm(AbstractSupervisorRegistrationForm):
 
-
-    class Meta(UserCreationForm.Meta):
-        model = User
-        fields = ('username', 'last_name', 'first_name',  'patronymic', 'password1', 'password2')
-    
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        if commit:
-            user.save()
-            supervisorPractice = SupervisorPractice.objects.create(user=user)
+        user.save()
+        supervisorPractice = SupervisorPractice.objects.create(
+            user=user, 
+            post=self.cleaned_data['post'],
+            first_name = self.cleaned_data['first_name'],
+            last_name = self.cleaned_data['last_name'],
+            patronymic = self.cleaned_data['patronymic'],
+            )
         return user

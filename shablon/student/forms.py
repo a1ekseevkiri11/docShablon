@@ -1,18 +1,11 @@
 from django import forms
-from django.forms import DateInput
 
-from user.models import (
-    Practice,
-    PracticeStudent,
-    Group,
-    DirectionOfTraining
-)
 
-class PracticeStudentFormStudent(forms.ModelForm):
-    class Meta:
-        model = PracticeStudent
-        fields = [
-            'type',
-            'pay',
-            'production_tasks',
-        ]
+class CSVFileUploadForm(forms.Form):
+    csv_file = forms.FileField(label='Загрузить CSV файл')
+
+    def clean_csv_file(self):
+        csv_file = self.cleaned_data['csv_file']
+        if not csv_file.name.endswith('.csv'):
+            raise forms.ValidationError('Пожалуйста, загрузите файл CSV')
+        return csv_file

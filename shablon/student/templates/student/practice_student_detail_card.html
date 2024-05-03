@@ -1,7 +1,11 @@
 {% if practice_student %}
     <hr>
     <h5>Отчет</h5>
-    <p>Тип стажировки: {{ practice_student.type }}</p>
-    <p>Оплачиваемая: {{ practice_student.pay }}</p>
-    <p>Производственные задачи: {{ practice_student.production_tasks }}</p>
+    <p>Студент: {{ practice_student.student.get_fio }}</p>
+    <p>Дневник практики:</p>
+    <ul>
+        {% for task in practice_student.studentproductiontasks_set.all %}
+            <li>{{ task.data }} - {{ task.title }}</li>
+        {% endfor %}
+    </ul>
 {% endif %}

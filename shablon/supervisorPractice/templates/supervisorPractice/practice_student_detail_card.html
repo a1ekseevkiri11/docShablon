@@ -1,8 +1,12 @@
 {% if practice_student.amount %}
     <hr>
     <h5>Оценка</h5>
-    <p>Как справлялся с трудностями: {{ practice_student.hard_quality }}</p>
-    <p>Продемонстрированные качества: {{ practice_student.quality }}</p>
-    <p>Объем выполненного задания: {{ practice_student.amount }}</p>
+    <p>Тип стажировки: {{ practice_student.type }}</p>
+    <p>Оплачиваемая: {{ practice_student.pay|yesno:"да,нет" }}</p>
+    <p>Производственные задачи: {{ practice_student.production_tasks }}</p>
+    <p>В ходе выполнения практики продемонстрировал(-а) следующие качества: {{ practice_student.quality }}</p>
+    <p>С возникающими при работе проблемами справлялся: {{ practice_student.hard_quality }}</p>
+    <p>Индивидуальное задание, предусмотренное программой практики, выполнено {{ practice_student.amount }}</p>
     <p>Замечения: {{ practice_student.remark }}</p>
+    <p>Оценка: "{{ practice_student.rating }}"</p>
 {% endif %}

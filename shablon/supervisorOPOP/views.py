@@ -135,8 +135,8 @@ class PracticeUpdateView(UpdateView, SupervisorOPOPMixin):
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['supervisoropop'] = self.request.user.supervisoropop  # Передаем текущего пользователя в параметрах формы
-        kwargs['instance'] = self.object  # Передаем объект для обновления
+        kwargs['supervisoropop'] = self.request.user.supervisoropop 
+        kwargs['instance'] = self.object  
         return kwargs
     
     def get_success_url(self):
