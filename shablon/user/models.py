@@ -121,15 +121,6 @@ class Practice(models.Model):
         return self.title
     
 
-class SupervisorPracticeProductionTasks(models.Model):
-
-    practice = models.OneToOneField(Practice, on_delete=models.CASCADE, null=True)
-    tasks = models.TextField(null=True)
-
-    def __str__(self):
-        return self.practice.title
-    
-
 class PracticeStudent(models.Model):
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -166,11 +157,12 @@ class RatingPracticeStudent(models.Model):
     )
     
     practice_student = models.OneToOneField(PracticeStudent, on_delete=models.CASCADE, null=True)
+    production_tasks = models.TextField(null=True)
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
     production_tasks = models.TextField(null=True)
-    hard_quality =  models.TextField(null=True)
-    quality =  models.TextField(null=True)
+    hard_quality = models.TextField(null=True)
+    quality = models.TextField(null=True)
     amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
     remark = models.TextField(null=True)
     rating = models.CharField(max_length=2, choices=rating_choices, null=True)

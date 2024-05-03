@@ -7,6 +7,7 @@ from user.models import (
     Group,
     DirectionOfTraining,
     Amount,
+    RatingPracticeStudent
 )
 
 from .queryset import (
@@ -16,13 +17,20 @@ from .queryset import (
 
 
 class PracticeStudentFilter(django_filters.FilterSet):
+    
+    APPRECIATED_CHOICES = [
+        (True, 'Да'),
+        (False, 'Нет')
+    ]
 
-    amount = django_filters.ModelChoiceFilter(
-        field_name='amount__title',
-        queryset=Amount.objects.all(),
-        empty_label="Не оценены",
-        label="Оценки",
+    appreciated = django_filters.ChoiceFilter(
+        choices=APPRECIATED_CHOICES,
+        widget=forms.RadioSelect,
+        label='Выставлена оценка',
+        method = 'filter_rating',
+        empty_label = "Все",
     )
+
 
     group = django_filters.ModelMultipleChoiceFilter(
         field_name='practice__group',
@@ -45,7 +53,7 @@ class PracticeStudentFilter(django_filters.FilterSet):
         fields = [
             'direction_of_training', 
             'group', 
-            'amount',
+            'appreciated',
         ]
 
 
@@ -54,3 +62,12 @@ class PracticeStudentFilter(django_filters.FilterSet):
         super().__init__(*args, **kwargs)
         self.filters['direction_of_training'].queryset = get_queryset_direction_of_training_for_SupervisorPractice(self.supervisorpractice)
         self.filters['group'].queryset = get_queryset_group_for_SupervisorPractice(self.supervisorpractice)
+
+
+    def filter_rating(self, queryset, name, value):
+        if value == 'True':
+            return queryset.exclude(ratingpracticestudent__isnull=True)
+        elif value == 'False':
+            return queryset.filter(ratingpracticestudent__isnull=True)
+        else:
+            return queryset

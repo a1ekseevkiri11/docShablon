@@ -8,7 +8,6 @@ from .models import (
     Practice,
     PracticeStudent,
     RatingPracticeStudent,
-    SupervisorPracticeProductionTasks,
     StudentProductionTasks,
 )
 
@@ -32,6 +31,5 @@ admin.site.register(Practice, PracticeAdmin)
 admin.site.register(PracticeStudent)
 
 admin.site.register(RatingPracticeStudent)
-admin.site.register(SupervisorPracticeProductionTasks)
 admin.site.register(StudentProductionTasks)
 

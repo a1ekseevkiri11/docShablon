@@ -105,7 +105,7 @@ class PracticeDetailView(View, StudentMixin):
         except PracticeStudent.DoesNotExist:
             return HttpResponseBadRequest("Нет отчета")
         
-        if not practice_student.amount:
+        if not practice_student.ratingpracticestudent:
             return HttpResponseBadRequest("Нет оценки отчета")
         
         
@@ -147,6 +147,9 @@ class StudentProductionTasksCreateView(View, StudentMixin):
             for row in csv_reader:
                 title = row.get('Subject')
                 data_str = row.get('Updated')
+
+                if not data_str or not title or title == "" or data_str == "":
+                    return HttpResponseRedirect(self.get_success_url())
                 
                 data = datetime.strptime(data_str, '%d/%m/%Y %I:%M %p').date()
                 

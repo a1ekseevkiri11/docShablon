@@ -22,11 +22,12 @@ from registration.permission import isSupervisorPractice
 
 from user.models import (
     PracticeStudent,
-    Practice
+    Practice,
+    RatingPracticeStudent
 )
 
 from .forms import (
-    PracticeStudentFormSupervisorPractice,
+    RatingPracticeStudentForm,
 )
 
 from .filters import (
@@ -41,6 +42,8 @@ from django.urls import (
     reverse_lazy,
     reverse,
 )
+
+from django.http import HttpResponseRedirect
 
 
 class SupervisorPracticeMixin(LoginRequiredMixin, UserPassesTestMixin):
@@ -91,14 +94,48 @@ class PracticeStudentDetailView(View, SupervisorPracticeMixin):
         return render(request, self.template_name, context)
 
 
-class PracticeStudentUpdateView(UpdateView, SupervisorPracticeMixin):
+class RatingPracticeStudentCreateView(CreateView, SupervisorPracticeMixin):
     template_name = 'supervisorPractice/practice_student_form.html'
-    model = PracticeStudent
-    form_class = PracticeStudentFormSupervisorPractice
+    model = RatingPracticeStudent
+    form_class = RatingPracticeStudentForm
 
     def extra_test_func(self):
-        return self.object.practice.supervisor_practice == self.request.user.supervisorpractice
+        practice_student_id = self.kwargs['practice_student_id']
+        practice_student = get_object_or_404(PracticeStudent, id=practice_student_id)
+        return practice_student.practice.supervisor_practice == self.request.user.supervisorpractice
+    
+    def form_valid(self, form):
+        practice_student_id = self.kwargs['practice_student_id']
+        practice_student = get_object_or_404(PracticeStudent, id=practice_student_id)
+        form.instance.practice_student = practice_student
+        return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': self.object.id})
+        practice_student_id = self.kwargs['practice_student_id']
+        return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': practice_student_id})
+
+
+
+
+
+
+class RatingPracticeStudentUpdateView(UpdateView, SupervisorPracticeMixin):
+    template_name = 'supervisorPractice/practice_student_form.html'
+    model = RatingPracticeStudent
+    form_class = RatingPracticeStudentForm
+
+    def extra_test_func(self):
+        practice_student_id = self.kwargs['practice_student_id']
+        practice_student = get_object_or_404(PracticeStudent, id=practice_student_id)
+        return practice_student.practice.supervisor_practice == self.request.user.supervisorpractice
+    
+    def form_valid(self, form):
+        practice_student_id = self.kwargs['practice_student_id']
+        practice_student = get_object_or_404(PracticeStudent, id=practice_student_id)
+        form.instance.practice_student = practice_student
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        practice_student_id = self.kwargs['practice_student_id']
+        return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': practice_student_id})
     
