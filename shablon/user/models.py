@@ -33,8 +33,8 @@ class DirectionOfTraining(models.Model):
     
 
     title = models.CharField(max_length=256, unique=True)
-    institute = models.ForeignKey(Institute, on_delete=models.CASCADE)
-    supervisorOPOP = models.ManyToManyField(SupervisorOPOP)
+    institute = models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True)
+    supervisorOPOP = models.ForeignKey(SupervisorOPOP, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return self.title

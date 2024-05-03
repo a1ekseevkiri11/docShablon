@@ -14,10 +14,8 @@ from .models import (
 
 admin.site.register(Amount)
 
-class DirectionOfTrainingAdmin(admin.ModelAdmin):
-    filter_horizontal = ('supervisorOPOP',)
 
-admin.site.register(DirectionOfTraining, DirectionOfTrainingAdmin)
+admin.site.register(DirectionOfTraining)
 
 admin.site.register(Group)
 admin.site.register(Institute)

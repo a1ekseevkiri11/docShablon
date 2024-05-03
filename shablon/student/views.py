@@ -146,7 +146,7 @@ class StudentProductionTasksCreateView(View, StudentMixin):
 
             for row in csv_reader:
                 title = row.get('Subject')
-                data_str = row.get('Updated')
+                data_str = row.get('Closed')
 
                 if not data_str or not title or title == "" or data_str == "":
                     return HttpResponseRedirect(self.get_success_url())

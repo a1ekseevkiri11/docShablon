@@ -185,7 +185,6 @@ class ReportGroupDetailView(DetailView, SupervisorOPOPMixin):
         output.seek(0)
         response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
         response['Content-Disposition'] = f'attachment; filename="generated_report.docx"'
-
         return response
 
 
