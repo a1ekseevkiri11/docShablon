@@ -23,11 +23,14 @@ from registration.permission import isSupervisorPractice
 from user.models import (
     PracticeStudent,
     Practice,
-    RatingPracticeStudent
+    RatingPracticeStudent,
+    Group,
+    ReportGroup
 )
 
 from .forms import (
     RatingPracticeStudentForm,
+    ReportGroupForm,
 )
 
 from .filters import (
@@ -36,6 +39,8 @@ from .filters import (
 
 from .queryset import (
     get_queryset_practice_student_for_SupervisorPractice,
+    get_queryset_group_for_SupervisorPractice,
+    get_queryset_practice_for_SupervisorPractice,
 )
 
 from django.urls import (
@@ -139,3 +144,43 @@ class RatingPracticeStudentUpdateView(UpdateView, SupervisorPracticeMixin):
         practice_student_id = self.kwargs['practice_student_id']
         return reverse('supervisor-practice-practice-student-detail', kwargs={'pk': practice_student_id})
     
+
+class ReportGroupListView(ListView, SupervisorPracticeMixin):
+    template_name = 'supervisorPractice/report_group_list.html'
+    context_object_name = 'practices'
+    paginate_by = 1
+
+
+    def get_queryset(self):
+        return get_queryset_practice_for_SupervisorPractice(self.request.user.supervisorpractice)
+        
+    
+
+class ReportGroupCreateView(CreateView, SupervisorPracticeMixin):
+    template_name = 'supervisorPractice/report_group_form.html'
+    context_object_name = 'group'
+    model = ReportGroup
+    form_class = ReportGroupForm
+    success_url = reverse_lazy('report-group-list')
+
+    def form_valid(self, form):
+        practice_id = self.kwargs['practice_id']
+        group_id = self.kwargs['group_id']
+
+        practice = get_object_or_404(Practice, id=practice_id)
+        group =  get_object_or_404(Group, id=group_id)
+        form.instance.practice = practice
+        form.instance.group = group
+        return super().form_valid(form)
+
+
+
+class ReportGroupUpdateView(UpdateView, SupervisorPracticeMixin):
+
+    template_name = 'supervisorPractice/report_group_form.html'
+    context_object_name = 'group'
+    model = ReportGroup
+    form_class = ReportGroupForm
+    success_url = reverse_lazy('report-group-list')
+
+

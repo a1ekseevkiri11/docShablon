@@ -1,0 +1,13 @@
+{% extends "supervisorOPOP/base.html" %}
+
+{% block title %}Отчеты по группам{% endblock %}
+
+{% block content %}
+<p>Группа: {{ report.group }}</p>
+<p>Название практики: {{ report.practic }}</p>
+<form action="{% url 'ready-report-group-detail' pk=report.pk %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Скачать отчет</button>
+</form>
+
+{% endblock content %}

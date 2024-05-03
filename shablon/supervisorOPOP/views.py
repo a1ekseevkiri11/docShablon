@@ -5,10 +5,18 @@ from django.contrib.auth.mixins import (
     UserPassesTestMixin
 )
 
+from io import BytesIO
+from docxtpl import DocxTemplate
+
 from django.urls import (
     reverse_lazy,
     reverse,
 )
+
+from django.http import HttpResponse, HttpResponseBadRequest
+
+
+from django.shortcuts import get_object_or_404
 
 
 from django.db.models import Q
@@ -28,6 +36,7 @@ from user.models import (
     DirectionOfTraining,
     Group,
     Practice,
+    ReportGroup,
 )
 
 from .filters import PracticeFilter
@@ -151,9 +160,33 @@ class PracticeDeleteView(DeleteView, SupervisorOPOPMixin):
 
     def extra_test_func(self):
         return practice_test_func(self.object, self.request.user.supervisoropop)
-
     
 
+class ReportGroupListView(ListView, SupervisorOPOPMixin):
+    model = ReportGroup
+    template_name = 'supervisorOPOP/report_group_list.html'
+    context_object_name = 'reports'
+
+
+class ReportGroupDetailView(DetailView, SupervisorOPOPMixin):
+    model = ReportGroup
+    template_name = 'supervisorOPOP/report_group_detail.html'
+    context_object_name = 'report'
+
+    #здесь скачивание документа
+    def post(self, request, pk):
+        report = self.get_object()
+        context = {}
+        context['report'] = report
+        tpl = DocxTemplate("C://Users//79828//Desktop//docShablon//shablon//supervisorPractice//shablon//report_group_templates.docx")
+        tpl.render(context)
+        output = BytesIO()
+        tpl.save(output)
+        output.seek(0)
+        response = HttpResponse(output.read(), content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+        response['Content-Disposition'] = f'attachment; filename="generated_report.docx"'
+
+        return response
 
 
 class DirectionOfTrainingDetailView(DetailView, SupervisorOPOPMixin):

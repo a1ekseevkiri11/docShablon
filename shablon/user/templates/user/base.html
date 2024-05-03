@@ -42,13 +42,15 @@
                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuUser">
                                         {% if user.supervisoropop %}
                                             <a class="dropdown-item" href="{% url 'practice-list'%}">Практики</a>  
-                                            <a class="dropdown-item" href="{% url 'practice-new'%}">Создать новую практику</a>                                      
+                                            <a class="dropdown-item" href="{% url 'practice-new'%}">Создать новую практику</a>
+                                            <a class="dropdown-item" href="{% url 'ready-report-group-list'%}">Скачать отчеты по группам</a>                                 
                                         {% endif %}
                                         {% if user.student %}
                                             <a class="dropdown-item" href="{% url 'student-practice-list'%}">Мои практики</a>     
                                         {% endif %}
                                         {% if user.supervisorpractice %}
-                                            <a class="dropdown-item" href="{% url 'supervisor-practice-practice-student-list'%}">Отчеты студентов</a>     
+                                            <a class="dropdown-item" href="{% url 'supervisor-practice-practice-student-list'%}">Отчеты студентов</a>
+                                            <a class="dropdown-item" href="{% url 'report-group-list' %}">Отчеты по группам</a>
                                         {% endif %}
                                         <hr class="dropdown-divider">
                                         <form method="post" action="{% url 'logout' %}">

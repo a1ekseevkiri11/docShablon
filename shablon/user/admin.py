@@ -9,6 +9,7 @@ from .models import (
     PracticeStudent,
     RatingPracticeStudent,
     StudentProductionTasks,
+    ReportGroup,
 )
 
 admin.site.register(Amount)
@@ -18,8 +19,6 @@ class DirectionOfTrainingAdmin(admin.ModelAdmin):
 
 admin.site.register(DirectionOfTraining, DirectionOfTrainingAdmin)
 
-
-    
 admin.site.register(Group)
 admin.site.register(Institute)
 
@@ -32,4 +31,7 @@ admin.site.register(PracticeStudent)
 
 admin.site.register(RatingPracticeStudent)
 admin.site.register(StudentProductionTasks)
+
+
+admin.site.register(ReportGroup)
 

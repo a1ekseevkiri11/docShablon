@@ -10,4 +10,6 @@ urlpatterns = [
     path('practice/delete/<int:pk>/', views.PracticeDeleteView.as_view(), name='practice-delete'),
     path('group', views.get_groups, name='get-groups'),
     path('directionOfTraining/<int:pk>/', views.DirectionOfTrainingDetailView.as_view(), name='direction_of_training_detail'),
+    path('reportGroup/', views.ReportGroupListView.as_view(), name='ready-report-group-list'),
+    path('reportGroup/<int:pk>/', views.ReportGroupDetailView.as_view(), name='ready-report-group-detail'),
 ]

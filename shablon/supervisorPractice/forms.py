@@ -3,7 +3,7 @@ from django.forms import DateInput
 
 from user.models import (
     RatingPracticeStudent,
-    
+    ReportGroup,
 )
 
 
@@ -21,3 +21,11 @@ class RatingPracticeStudentForm(forms.ModelForm):
             'rating',
         ]
 
+
+
+class ReportGroupForm(forms.ModelForm):
+    class Meta:
+        model = ReportGroup
+        fields = [
+            'title',
+        ]

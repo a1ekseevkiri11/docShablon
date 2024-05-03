@@ -121,6 +121,12 @@ class Practice(models.Model):
         return self.title
     
 
+class ReportGroup(models.Model):
+    title = models.TextField(null=True)
+    practice = models.OneToOneField(Practice, on_delete=models.CASCADE)
+    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    
+
 class PracticeStudent(models.Model):
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
