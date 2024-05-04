@@ -3,7 +3,10 @@
         <div class="card-body">
             <h5 class="card-title">{{ report.practice }}</h5>
             <h5 class="card-title">{{ report.group  }}</h5>
-            <a href="{% url 'ready-report-group-detail' pk=report.pk %}" class="btn btn-info">Подробнее</a>
+            <form action="{% url 'ready-report-group-detail' pk=report.pk %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-primary type="submit">Скачать</button>
+            </form>
         </div>
     </div>
 </div>

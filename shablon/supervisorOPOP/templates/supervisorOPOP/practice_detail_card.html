@@ -21,7 +21,9 @@
     <h5 class="text-start mt-5">Руководитель практики от организации</h5>
     <p class="text-start mt-4">{{ practice.supervisor_practice.post }} {{ practice.supervisor_practice.get_fio }}</p>   
     {% if user.supervisoropop %}
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'practice-update' practice.id %}">Редактировать</a>
-    <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'practice-delete' practice.id %}">Удалить</a>
+    <div class="button-container mb-5 text-center">
+        <a class="btn btn-success" href="{% url 'practice-update' practice.id %}">Редактировать</a>
+        <a class="btn btn-danger" href="{% url 'practice-delete' practice.id %}">Удалить</a>
+    </div>
     {% endif %}
 </div>
