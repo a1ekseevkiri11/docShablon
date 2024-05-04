@@ -7,7 +7,7 @@ from datetime import datetime
 from registration.models import Profile
 
 class AbstractSupervisor(Profile):
-    post = models.CharField(max_length=256, null=True)
+    post = models.CharField(max_length=256)
     class Meta:
         abstract = True
 
@@ -32,9 +32,9 @@ class Institute(models.Model):
 class DirectionOfTraining(models.Model):
     
 
-    title = models.CharField(max_length=256, unique=True)
-    institute = models.ForeignKey(Institute, on_delete=models.SET_NULL, null=True)
-    supervisorOPOP = models.ForeignKey(SupervisorOPOP, on_delete=models.SET_NULL, null=True)
+    title = models.CharField(max_length=256)
+    institute = models.ForeignKey(Institute, on_delete=models.CASCADE,)
+    supervisorOPOP = models.ForeignKey(SupervisorOPOP, on_delete=models.CASCADE,)
 
     def __str__(self):
         return self.title
@@ -57,13 +57,13 @@ class Group(models.Model):
     )
 
     title = models.CharField(max_length=10)
-    direction_of_training = models.ForeignKey(DirectionOfTraining, on_delete=models.CASCADE, null=True)
+    direction_of_training = models.ForeignKey(DirectionOfTraining, on_delete=models.CASCADE)
     level = models.CharField(max_length=20, choices=level_choices)
     year = models.PositiveIntegerField()
-    specialty_code = models.CharField(max_length=12, null=True)
-    specialty_name = models.CharField(max_length=512, null=True)
-    form_of_education = models.CharField(max_length=512, null=True, choices=form_of_education_choices)
-    group_gid = models.CharField(max_length=128, null=True)
+    specialty_code = models.CharField(max_length=12)
+    specialty_name = models.CharField(max_length=512)
+    form_of_education = models.CharField(max_length=512, choices=form_of_education_choices)
+    group_gid = models.CharField(max_length=128)
 
 
     def __str__(self):
@@ -119,15 +119,15 @@ class Practice(models.Model):
     date_decree = models.DateField()
 
     #адрес
-    title_place = models.CharField(max_length=512, null=True)
-    adress_place = models.CharField(max_length=512, null=True)
+    title_place = models.CharField(max_length=512)
+    adress_place = models.CharField(max_length=512)
 
     #связь руководителей практики
     supervisor_practice = models.ForeignKey(SupervisorPractice, on_delete=models.SET_NULL, null=True)
 
     #руководителя от ЮГУ
-    fio_supervisor_YuSU = models.CharField(max_length=512, null=True)
-    post_supervisor_YuSU = models.CharField(max_length=512, null=True)
+    fio_supervisor_YuSU = models.CharField(max_length=512)
+    post_supervisor_YuSU = models.CharField(max_length=512)
 
     #руководитель от организации
     fio_supervisor_company = models.CharField(max_length=512, null=True)
@@ -138,7 +138,7 @@ class Practice(models.Model):
     
 
 class ReportGroup(models.Model):
-    title = models.TextField(null=True)
+    title = models.TextField()
     practice = models.OneToOneField(Practice, on_delete=models.CASCADE)
     group = models.OneToOneField(Group, on_delete=models.CASCADE)
     
@@ -146,7 +146,7 @@ class ReportGroup(models.Model):
 class PracticeStudent(models.Model):
 
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    practice = models.ForeignKey(Practice, on_delete=models.CASCADE, null=True)
+    practice = models.ForeignKey(Practice, on_delete=models.CASCADE)
     
     def __str__(self):
         return "Отчет " + self.practice.title
@@ -155,9 +155,9 @@ class PracticeStudent(models.Model):
 
 class StudentProductionTasks(models.Model):
     
-    title = models.CharField(max_length=512, null=True)
-    data = models.DateField(null=True)
-    practice_student = models.ForeignKey(PracticeStudent, on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=512)
+    data = models.DateField()
+    practice_student = models.ForeignKey(PracticeStudent, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.practice_student.student.get_short_fio() + " : " +  self.practice_student.practice.title
@@ -178,16 +178,16 @@ class RatingPracticeStudent(models.Model):
         ("5", "5"),
     )
     
-    practice_student = models.OneToOneField(PracticeStudent, on_delete=models.CASCADE, null=True)
-    production_tasks = models.TextField(null=True)
+    practice_student = models.OneToOneField(PracticeStudent, on_delete=models.CASCADE)
+    production_tasks = models.TextField()
     type = models.CharField(max_length=20, choices=type_choices)
     pay = models.BooleanField()
-    production_tasks = models.TextField(null=True)
-    hard_quality = models.TextField(null=True)
-    quality = models.TextField(null=True)
+    production_tasks = models.TextField()
+    hard_quality = models.TextField()
+    quality = models.TextField()
     amount = models.ForeignKey(Amount, on_delete=models.SET_NULL, null=True)
-    remark = models.TextField(null=True)
-    rating = models.CharField(max_length=2, choices=rating_choices, null=True)
+    remark = models.TextField()
+    rating = models.CharField(max_length=2, choices=rating_choices)
 
 
 def generate_upload_path(instance, filename):
