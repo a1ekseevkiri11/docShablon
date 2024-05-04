@@ -1,6 +1,6 @@
-<div class="container mt-5">
-    <h3>{{ practice.title }}</h3>
-    <p>Группы: {% for group in practice.group.all %}
+<div class="container-sm custom-container mt-5">
+    <h3 class="text-center">{{ practice.title }}</h3>
+    <p class="mt-4">Группы: {% for group in practice.group.all %}
         {{ group.title }}{% if not forloop.last %}, {% endif %}
     {% endfor %}
     </p>
@@ -8,18 +8,18 @@
     <p>Вид практики: {{ practice.get_kind_display }}</p>
     <p>Дата начала: {{ practice.date_start }}</p>
     <p>Дата окончания: {{ practice.date_end }}</p>
-    <h5>Документ</h5>
-    <p>Номер: {{ practice.number_decree }}</p>
+    <h5 class="text-start mt-5">Документ</h5>
+    <p class="mt-4">Номер: {{ practice.number_decree }}</p>
     <p>Дата подписания: {{ practice.date_decree }}</p>
-    <h5>Место проведения практики</h5>
-    <p>Название: {{ practice.title_place }}</p>
+    <h5 class="text-start mt-5">Место проведения практики</h5>
+    <p class="mt-4">Название: {{ practice.title_place }}</p>
     <p>Адрес: {{ practice.adress_place}}</p>
-    <h5>Руководитель от ЮГУ</h5>
-    <p>{{ practice.post_supervisor_YuSU }} {{ practice.fio_supervisor_YuSU }}</p>
-    <h5>Руководитель от организации</h5>
-    <p>{{ practice.post_supervisor_company }} {{ practice.fio_supervisor_company }}</p>
-    <h5>Руководитель практики от организации</h5>
-    <p>{{ practice.supervisor_practice.post }} {{ practice.supervisor_practice.get_fio }}</p>   
+    <h5 class="text-start mt-5">Руководитель от ЮГУ</h5>
+    <p class="text-start mt-4">{{ practice.post_supervisor_YuSU }} {{ practice.fio_supervisor_YuSU }}</p>
+    <h5 class="text-start mt-5">Руководитель от организации</h5>
+    <p class="text-start mt-4">{{ practice.post_supervisor_company }} {{ practice.fio_supervisor_company }}</p>
+    <h5 class="text-start mt-5">Руководитель практики от организации</h5>
+    <p class="text-start mt-4">{{ practice.supervisor_practice.post }} {{ practice.supervisor_practice.get_fio }}</p>   
     {% if user.supervisoropop %}
     <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'practice-update' practice.id %}">Редактировать</a>
     <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'practice-delete' practice.id %}">Удалить</a>

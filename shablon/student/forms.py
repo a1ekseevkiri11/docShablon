@@ -2,7 +2,9 @@ from django import forms
 
 
 class CSVFileUploadForm(forms.Form):
-    csv_file = forms.FileField(label='Загрузить CSV файл')
+    csv_file = forms.FileField(label='Загрузить CSV файл',
+                               widget=forms.FileInput(attrs={'class': 'form-label'})
+                               )
 
     def clean_csv_file(self):
         csv_file = self.cleaned_data['csv_file']

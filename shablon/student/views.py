@@ -32,6 +32,7 @@ from user.models import (
     PracticeStudent,
     Practice,
     StudentProductionTasks,
+    RatingPracticeStudent,
 )
 
 from django.shortcuts import render, get_object_or_404
@@ -137,23 +138,31 @@ class StudentProductionTasksCreateView(View, StudentMixin):
         practice_id = self.kwargs['practice_id']
         practice = get_object_or_404(Practice, pk=practice_id)
         practice_student, created = PracticeStudent.objects.get_or_create(practice=practice, student=self.request.user.student)
+        if RatingPracticeStudent.objects.filter(practice_student=practice_student).exists():
+            return HttpResponseRedirect(self.get_success_url())
         StudentProductionTasks.objects.filter(practice_student=practice_student).delete()
         form = self.form_class(request.POST, request.FILES)
         if form.is_valid():
             uploaded_file = form.cleaned_data['csv_file']
+
             csv_text = TextIOWrapper(uploaded_file, encoding='utf-8')
+        
             csv_reader = csv.DictReader(csv_text)
 
-            for row in csv_reader:
-                title = row.get('Subject')
-                data_str = row.get('Closed')
+            try:
+                for row in csv_reader:
+                    title = row.get('Subject')
+                    data_str = row.get('Closed')
 
-                if not data_str or not title or title == "" or data_str == "":
-                    return HttpResponseRedirect(self.get_success_url())
-                
-                data = datetime.strptime(data_str, '%d/%m/%Y %I:%M %p').date()
-                
-                StudentProductionTasks.objects.create(title=title, data=data, practice_student=practice_student)
+                    if not data_str or not title or title == "" or data_str == "":
+                        continue
+                    
+                    data = datetime.strptime(data_str, '%d/%m/%Y %I:%M %p').date()
+                    
+                    StudentProductionTasks.objects.create(title=title, data=data, practice_student=practice_student)
+            except:
+                return HttpResponseRedirect(self.get_success_url())
+
 
         return HttpResponseRedirect(self.get_success_url())
     

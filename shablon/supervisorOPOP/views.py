@@ -206,8 +206,6 @@ class ReportGroupDetailView(DetailView, SupervisorOPOPMixin):
             setattr(student, 'cur_rating', practices_student.ratingpracticestudent)
             students_completed.append(student)
         
-        print(students_completed)
-        print(students_failed)
 
         context['year'] =  report.practice.date_start.year - 1 if report.practice.date_start.month < 9 else report.practice.date_start.year
         context['students_completed'] = students_completed

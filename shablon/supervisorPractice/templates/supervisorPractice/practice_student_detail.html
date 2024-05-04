@@ -6,9 +6,11 @@
 {% include "supervisorOPOP/practice_detail_card.html" %}
 {% include "student/practice_student_detail_card.html" %}
 {% include "supervisorPractice/practice_student_detail_card.html" %}
-{% if practice_student.ratingpracticestudent %}
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'rating-practice-practice-student-update' practice_student_id=practice_student.pk pk=practice_student.ratingpracticestudent.pk %}">Изменить оценку</a>
-{% else %}
-    <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'rating-practice-practice-student-create' practice_student_id=practice_student.pk %}">Оценить</a>
-{% endif %}
+<div class="container-sm custom-container mt-5 text-center mb-5">
+    {% if practice_student.ratingpracticestudent %}
+        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'rating-practice-practice-student-update' practice_student_id=practice_student.pk pk=practice_student.ratingpracticestudent.pk %}">Изменить оценку</a>
+    {% else %}
+        <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'rating-practice-practice-student-create' practice_student_id=practice_student.pk %}">Оценить</a>
+    {% endif %}
+</div>
 {% endblock content %}
