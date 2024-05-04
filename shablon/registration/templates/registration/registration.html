@@ -54,13 +54,27 @@
                         <h3 class="mb-0 fw-bolder">ГЕНЕРАЦИЯ<br>ОТЧЕТОВ<br>ЮГУ</h3>
                     </div>
                     <br>
-                    <div>
-                        Регистрация для {{ group_name}}
+                    <div class="text-center">
+                        <strong>
+                            Регистрация для пользователя {{ group_name}}
+                        </strong>
                     </div>
                     <br>
                     <form method="post" class="mx-auto" style="max-width: 400px;">
                         {% csrf_token %}
-                        {{ form.as_p }}
+                        <p>Логин {{form.username}}</p>
+                        <p>Фамилия {{form.last_name}}</p>
+                        <p>Имя {{form.first_name}}</p>
+                        <p>Отчетсво {{form.patronymic}}</p>
+                        {% if form.group %}
+                            <p>Группа {{form.group}}</p>
+                        {% endif %}
+                        {% if form.post %}
+                            <p>Пост {{form.post}}</p>
+                        {% endif %}
+                        <p>Пароль {{form.password1}}</p>
+                        <p>Повторите пароль {{form.password2}}</p>
+                        
                         <button class="form-control btn-primary btn-block" type="submit">Зарегистрироваться</button>
                     </form>
                 </div>

@@ -9,15 +9,22 @@ from user.models import (
     SupervisorOPOP,
 )
 
+from django.forms import Select
+
 class ProfileRegistrationForm(UserCreationForm):
     first_name = forms.CharField(required=True, help_text='Имя')
     last_name = forms.CharField(required=True, help_text='Фамилия')
     patronymic = forms.CharField(required=True, help_text='Отчество')
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)  # Вызов метода __init__ родительского класса
+        for field_name, field in self.fields.items():
+            field.widget.attrs.update({'class': 'form-control'})
+
 
 class StudentRegistrationForm(ProfileRegistrationForm):
 
-    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True)
+    group = forms.ModelChoiceField(queryset=Group.objects.all(), required=True, widget=Select(attrs={'class': 'form-select form-select-lg mb-3'}))
 
     class Meta(ProfileRegistrationForm.Meta):
         model = User
