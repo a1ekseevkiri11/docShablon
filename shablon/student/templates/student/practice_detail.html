@@ -20,12 +20,15 @@
 {% endif %}
 
 {% include "supervisorPractice/practice_student_detail_card.html" %}
+<div class="text-center mb-3">
+
 
 {% if practice_student.ratingpracticestudent %}
     <form action="{% url 'student-practice-detail' practice.id %}" method="post">
         {% csrf_token %}
-        <button type="submit">Скачать отчет</button>
+        <button class="btn btn-success " type="submit">Скачать отчет</button>
     </form>
 {% endif %}
+</div>
 
 {% endblock content %}

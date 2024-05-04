@@ -42,6 +42,8 @@ from django.urls import (
     reverse,
 )
 
+from registration.declination import get_str_genitive
+
 from django.http import HttpResponseRedirect
 
 from .utils import practice_student_test_func
@@ -114,7 +116,8 @@ class PracticeDetailView(View, StudentMixin):
             'practice': practice, 
             'practice_student': practice_student,
         }
-
+        context['kind_gent'] = get_str_genitive(str=practice.get_kind_display(), inflect='gent')
+        context['type_gent'] = get_str_genitive(str=practice.get_type_display(), inflect='gent')
         tpl = DocxTemplate("C://Users//79828//Desktop//docShablon//shablon//student//shablon//practice_diary_template.docx")
         tpl.render(context)
         output = BytesIO()
