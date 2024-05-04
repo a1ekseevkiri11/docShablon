@@ -50,10 +50,20 @@ class Group(models.Model):
         ('PhD', 'Аспирантура'),
     )
 
+    form_of_education_choices = (
+        ('full-time', 'очная'),
+        ('part-time', 'очно-заочная'),
+        ('extramural', 'заочная'),
+    )
+
     title = models.CharField(max_length=10)
     direction_of_training = models.ForeignKey(DirectionOfTraining, on_delete=models.CASCADE, null=True)
     level = models.CharField(max_length=20, choices=level_choices)
     year = models.PositiveIntegerField()
+    specialty_code = models.CharField(max_length=12, null=True)
+    specialty_name = models.CharField(max_length=512, null=True)
+    form_of_education = models.CharField(max_length=512, null=True, choices=form_of_education_choices)
+    group_gid = models.CharField(max_length=128, null=True)
 
 
     def __str__(self):
@@ -61,8 +71,14 @@ class Group(models.Model):
     
 
 class Student(Profile):
+    state_choices = (
+        ('no', 'нет'),
+        ('part-time', 'декретный отпуск'),
+        ('extramural', 'академический отпуск'),
+    )
     
     group =  models.ForeignKey(Group, on_delete=models.CASCADE)
+    state = models.CharField(max_length=512, default='no', choices=state_choices)
 
 
 class Amount(models.Model):

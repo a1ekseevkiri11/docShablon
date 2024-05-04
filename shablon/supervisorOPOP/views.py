@@ -37,6 +37,7 @@ from user.models import (
     Group,
     Practice,
     ReportGroup,
+    PracticeStudent,
 )
 
 from .filters import PracticeFilter
@@ -49,6 +50,8 @@ from .queryset import (
     get_queryset_practice_for_SupervisorOPOP,
     
 )
+
+from registration.declination import get_str_genitive
 
 def get_groups(request):
     direction_id = request.GET.get('direction_id')  # Получаем id выбранного направления обучения
@@ -168,16 +171,50 @@ class ReportGroupListView(ListView, SupervisorOPOPMixin):
     context_object_name = 'reports'
 
 
+
+
 class ReportGroupDetailView(DetailView, SupervisorOPOPMixin):
     model = ReportGroup
     template_name = 'supervisorOPOP/report_group_detail.html'
     context_object_name = 'report'
 
-    #здесь скачивание документа
     def post(self, request, pk):
         report = self.get_object()
         context = {}
         context['report'] = report
+
+        students = report.group.student_set.all()
+        students_completed = []
+        students_failed = []
+
+        for student in students:
+
+            try:
+                practices_student = PracticeStudent.objects.get(practice=report.practice, student=student)
+            except:
+                students_failed.append(student)
+                continue
+
+            if not practices_student.ratingpracticestudent:
+                students_failed.append(student)
+                continue
+
+            if practices_student.ratingpracticestudent.rating == "2":
+                students_failed.append(student)
+                continue
+
+            setattr(student, 'cur_rating', practices_student.ratingpracticestudent)
+            students_completed.append(student)
+        
+        print(students_completed)
+        print(students_failed)
+
+        context['year'] =  report.practice.date_start.year - 1 if report.practice.date_start.month < 9 else report.practice.date_start.year
+        context['students_completed'] = students_completed
+        context['students_failed'] = students_failed
+        context['kind_gent'] = get_str_genitive(str=report.practice.get_kind_display(), inflect='gent')
+        context['type_gent'] = get_str_genitive(str=report.practice.get_type_display(), inflect='gent')
+
         tpl = DocxTemplate("C://Users//79828//Desktop//docShablon//shablon//supervisorPractice//shablon//report_group_templates.docx")
         tpl.render(context)
         output = BytesIO()
