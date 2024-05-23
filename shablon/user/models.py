@@ -140,7 +140,7 @@ class Practice(models.Model):
 class ReportGroup(models.Model):
     title = models.TextField()
     practice = models.OneToOneField(Practice, on_delete=models.CASCADE)
-    group = models.OneToOneField(Group, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
     
 
 class PracticeStudent(models.Model):
